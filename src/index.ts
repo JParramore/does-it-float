@@ -75,11 +75,11 @@ const incrementFloat = (value: number): number => {
   // Read as bigInt to make incrementing and exponent rollover easy
   const bigInt = view.getBigUint64(0);
 
-  if (value === 0 && bigInt.toString(2).padStart(64, "0")[0] === "1") {
+  if (Object.is(value, -0)) {
     return 0;
   }
 
-  if (value === 0 && bigInt.toString(2).padStart(64, "0")[0] === "0") {
+  if (Object.is(value, 0)) {
     return Number.MIN_VALUE;
   }
 
@@ -98,11 +98,11 @@ const decrementFloat = (value: number): number => {
   // Read as bigInt to make incrementing and exponent rollover easy
   const bigInt = view.getBigUint64(0);
 
-  if (value === 0 && bigInt.toString(2).padStart(64, "0")[0] === "0") {
+  if (Object.is(value, 0)) {
     return -0;
   }
 
-  if (value === 0 && bigInt.toString(2).padStart(64, "0")[0] === "1") {
+  if (Object.is(value, -0)) {
     return -Number.MIN_VALUE;
   }
 
