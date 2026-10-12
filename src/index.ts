@@ -83,7 +83,7 @@ const incrementFloat = (value: number): number => {
     return Number.MIN_VALUE;
   }
 
-  const inc = value > 0 ? bigInt + 1n : bigInt - 1n;
+  const inc = (bigInt >> 63n) === 0n ? bigInt + 1n : bigInt - 1n;
   view.setBigUint64(0, inc)
   // Write over buffer w/ new value and out
   return view.getFloat64(0);
@@ -106,36 +106,40 @@ const decrementFloat = (value: number): number => {
     return -Number.MIN_VALUE;
   }
 
-  const dec = value > 0 ? bigInt - 1n : bigInt + 1n;
+  const dec = (bigInt >> 63n) === 0n ? bigInt - 1n : bigInt + 1n;
   view.setBigUint64(0, dec)
   // Write over buffer w/ new value and out
   return view.getFloat64(0);
 }
 
-let val = Number.MIN_VALUE;
-console.log(inspectFloat(val))
-for (let i = 0; i < 4; i++) {
-  const tmp = decrementFloat(val);
-  const gap = tmp - val;
-  console.log(`${tmp} (+${gap})`);
-  console.log(inspectFloat(tmp))
-  val = tmp;
-}
+// let val = Number.MIN_VALUE;
+// console.log(inspectFloat(val))
+// for (let i = 0; i < 4; i++) {
+//   const tmp = decrementFloat(val);
+//   const gap = tmp - val;
+//   console.log(`${tmp} (+${gap})`);
+//   console.log(inspectFloat(tmp))
+//   val = tmp;
+// }
 
-console.log('------')
-let val2 = -Number.MIN_VALUE;
-console.log(inspectFloat(val2))
-for (let i = 0; i < 3; i++) {
-  const tmp = incrementFloat(val2);
-  const gap = tmp - val2;
-  console.log(`${tmp} (+${gap})`);
-  console.log(inspectFloat(tmp))
-  val2 = tmp;
-}
+// console.log('------')
+// let val2 = -Number.MIN_VALUE;
+// console.log(inspectFloat(val2))
+// for (let i = 0; i < 3; i++) {
+//   const tmp = incrementFloat(val2);
+//   const gap = tmp - val2;
+//   console.log(`${tmp} (+${gap})`);
+//   console.log(inspectFloat(tmp))
+//   val2 = tmp;
+// }
 // console.log(inspectFloat(-Number.MIN_VALUE))
 
 // const la2 = incrementFloat(2.0)
 // const lb2 = decrementFloat(2.0);
 
-// console.log(inspectFloat(la2))
-// console.log(inspectFloat(lb2))
+
+let val = 2 ** -1022;
+for (let i = 0; i < 3; i++){
+  console.log(inspectFloat(val));
+  val = decrementFloat(val);
+}
