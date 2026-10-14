@@ -15,7 +15,7 @@ const inspectFloat = (value: number) => {
     exp: bits.slice(1, 12),
     man: bits.slice(12),
     hex: raw.toString(16).padStart(16, '0'),
-    class: getClassification(bits),
+    classifictaion: getClassification(bits),
   };
 };
 
@@ -59,16 +59,16 @@ const inspectBits = (bits: string) => {
   };
 };
 
-console.log(
-  inspectBits(
-    '0111111111111000000000000000000000000000000000000000000000000001',
-  ),
-);
-console.log(
-  inspectBits(
-    '0111111111111000000000000000000000000000000000000000000000000010',
-  ),
-);
+// console.log(
+//   inspectBits(
+//     '0111111111111000000000000000000000000000000000000000000000000001',
+//   ),
+// );
+// console.log(
+//   inspectBits(
+//     '0111111111111000000000000000000000000000000000000000000000000010',
+//   ),
+// );
 
 // console.log(inspectFloat(1.5))
 // console.log(inspectFloat(2))
@@ -193,18 +193,23 @@ const decrementFloat = (value: number): number => {
 //   val = decrementFloat(val);
 // }
 
-const max = Number.MAX_VALUE;
-const min = Number.MIN_VALUE;
+// let val = Number.MAX_VALUE;
+// // const min = Number.MIN_VALUE;
 
-for (let i = 0; i < 10; i++) {
-  const next = incrementFloat(max);
-  const gap = next - max;
-  console.log(inspectFloat(next));
-  console.log(`${next} (+${gap})`);
-}
-for (let i = 0; i < 10; i++) {
-  const next = decrementFloat(min);
-  const gap = next - min;
-  console.log(inspectFloat(next));
-  console.log(`${next} (+${gap})`);
-}
+// for (let i = 0; i < 10; i++) {
+//   console.log(inspectFloat(val));
+//   val = incrementFloat(val);
+// }
+// for (let i = 0; i < 10; i++) {
+//   const next = decrementFloat(min);
+//   const gap = next - min;
+//   console.log(inspectFloat(next));
+//   console.log(`${next} (+${gap})`);
+// }
+
+
+console.log(inspectFloat(1.01))
+console.log(inspectFloat(1.0))
+
+console.log(inspectFloat(0))
+console.log(inspectFloat(-0))
