@@ -1,4 +1,4 @@
-const getClassification = (bits: string) => {
+const classifyEncoding = (bits: string) => {
   const sign = bits[0];
   const exp = bits.slice(1, 12);
   const man = bits.slice(12);
@@ -20,4 +20,4 @@ const getClassification = (bits: string) => {
   return 'Normal';
 };
 
-export default getClassification;
+export default classifyEncoding;
