@@ -1,58 +1,50 @@
-import { useState } from 'react';
-import { FloatRow } from './components/FloatRow';
-import inspectFloat from './lib/inspect-float';
-import nextEncoding from './lib/next-encoding';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
-import previousEncoding from './lib/previous-encoding';
-
-const floats = [
-  { label: '0', f: 0 },
-  { label: '0.01', f: 0.01 },
-  { label: '16', f: 16 },
-  { label: '1.0', f: 1.0 },
-  { label: 'MIN_VALUE', f: Number.MIN_VALUE },
-  { label: '-MIN_VALUE', f: -Number.MIN_VALUE },
-  { label: 'MAX_VALUE', f: Number.MAX_VALUE },
-  { label: 'POSITIVE_INFINITY', f: Number.POSITIVE_INFINITY },
-  { label: 'NEGATIVE_INFINITY', f: Number.NEGATIVE_INFINITY },
-  { label: 'NaN', f: Number.NaN },
-  { label: 'incrementFloat(POSITIVE_INFINITY)', f: Number.POSITIVE_INFINITY, inc: true },
-  { label: 'increment 0', f: 0, inc: true },
-  { label: 'increment -0', f: -0, inc: true }
-].map((f, i) => {
-  let fl
-  if (f.inc) {
-    fl = nextEncoding(inspectFloat(f.f));
-  } else {
-    fl = inspectFloat(f.f);
-  }
-  return { key: '' + i, label: f.label, ...fl }
-})
+import { FloatRow } from './components/FloatRow';
+import indexToEncoding from './lib/index-to-encoding';
+import inspectEncoding from './lib/inspect-encoding';
 
 function App() {
-  const [selected, setSelected] = useState(floats[0]);
-  const [current, setCurrent] = useState(floats[0]);
+  const [scrollPosition, setScrollPosition] = useState<bigint>(0n);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const setSelectedAndCurrent = (f: typeof floats[0]) => {
-    setSelected(f);
-    setCurrent(f);
-  };
+  useEffect(() => {
+    const currentRef = ref.current;
+    if (!currentRef) return;
+    const onWheelHandler = (event: WheelEvent) => {
+      event.preventDefault();
+      console.log('deltaX:', event.deltaX)
+      console.log('deltaY:', event.deltaY);
+      console.log('deltaZ:', event.deltaZ);
+      console.log('deltaMode:', event.deltaMode);
+
+      setScrollPosition(prev => prev + BigInt(parseInt(event.deltaY.toString())));
+    };
+    currentRef.addEventListener('wheel', onWheelHandler, { passive: false });
+    return () => currentRef.removeEventListener('wheel', onWheelHandler);
+  }, []);
 
   return <>
-    <select value={selected.key} onChange={e => setSelectedAndCurrent(floats.find(f => f.key === e.target.value)!)}>
-      {
-        floats.map(f => {
-          return <option key={f.key} value={f.key}>
-            {`${f.label} (${f.hex})`}
-          </option>
-        })
-      }
-    </select>
-    <button onClick={() => setCurrent({ key: '', label: 'next', ...nextEncoding(current) })}>Next Encoding</button>
-    <button onClick={() => setCurrent({ key: '', label: 'previous', ...previousEncoding(current) })}>Previous Encoding</button>
-    <FloatRow
-      {...current}
-    />
+    <div className="scroll-container" ref={ref}>
+      <p>Scroll Position: {scrollPosition.toString()}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Float</th>
+            <th>Int</th>
+            <th>Bin</th>
+            <th>Sign</th>
+            <th>Exp</th>
+            <th>Man</th>
+            <th>Hex</th>
+            <th>Classification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <FloatRow {...inspectEncoding(indexToEncoding(scrollPosition))} />
+        </tbody>
+      </table>
+    </div>
   </>;
 }
 
