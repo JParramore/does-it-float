@@ -1,18 +1,34 @@
 import type Float from "../lib/float";
+import nextEncoding from "../lib/next-encoding";
 
 type FloatRowProps = Float;
 
-export const FloatRow = ({ float, int, bin, sign, exp, man, hex, classification }: FloatRowProps) => {
+export const FloatRow = (float: FloatRowProps) => {
+
+  const rows = [];
+  rows.push(float);
+  let val = float;
+  for (let i = 0; i < 100; i++) {
+    val = nextEncoding(val);
+    rows.push(val);
+  }
+
   return (
-    <tr>
-      <td>{float}</td>
-      <td>{int}</td>
-      <td>{bin}</td>
-      <td>{sign}</td>
-      <td>{exp}</td>
-      <td>{man}</td>
-      <td>{hex}</td>
-      <td>{classification}</td>
-    </tr>
+    <>
+      {
+        rows.map((row, index) => (
+          <tr key={index}>
+            <td>{row.float}</td>
+            <td>{row.int}</td>
+            <td>{row.bin}</td>
+            <td>{row.sign}</td>
+            <td>{row.exp}</td>
+            <td>{row.man}</td>
+            <td>{row.hex}</td>
+            <td>{row.classification}</td>
+          </tr>
+        ))
+      }
+    </>
   );
 } 

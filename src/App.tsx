@@ -5,7 +5,7 @@ import indexToEncoding from './lib/index-to-encoding';
 import inspectEncoding from './lib/inspect-encoding';
 
 function App() {
-  const [scrollPosition, setScrollPosition] = useState<bigint>(0n);
+  const [scrollPosition, setScrollPosition] = useState<bigint>(1n << 63n);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
