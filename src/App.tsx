@@ -1,51 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import './App.css';
-import { FloatRow } from './components/FloatRow';
-import indexToEncoding from './lib/index-to-encoding';
-import inspectEncoding from './lib/inspect-encoding';
+import { FloatTable } from './components/FloatTable';
+import useElementHeight from './hooks/useElementHeight';
+import useScrollPosition from './hooks/useScrollPosition';
+import { LAST_INDEX, ROW_HEIGHT } from './lib/constants';
+
+const INITIAL_POSITION = { anchor: LAST_INDEX - 199n, offset: 0 };
+// const INITIAL_POSITION = { anchor: 0n, offset: 0 };
 
 function App() {
-  const [scrollPosition, setScrollPosition] = useState<bigint>(1n << 63n);
   const ref = useRef<HTMLDivElement>(null);
+  const height = useElementHeight(ref);
+  const visibleRows = Math.floor((height - ROW_HEIGHT) / ROW_HEIGHT);
+  const { anchor } = useScrollPosition(ref, visibleRows, INITIAL_POSITION);
 
-  useEffect(() => {
-    const currentRef = ref.current;
-    if (!currentRef) return;
-    const onWheelHandler = (event: WheelEvent) => {
-      event.preventDefault();
-      console.log('deltaX:', event.deltaX)
-      console.log('deltaY:', event.deltaY);
-      console.log('deltaZ:', event.deltaZ);
-      console.log('deltaMode:', event.deltaMode);
-
-      setScrollPosition(prev => prev + BigInt(parseInt(event.deltaY.toString())));
-    };
-    currentRef.addEventListener('wheel', onWheelHandler, { passive: false });
-    return () => currentRef.removeEventListener('wheel', onWheelHandler);
-  }, []);
-
-  return <>
-    <div className="scroll-container" ref={ref}>
-      <p>Scroll Position: {scrollPosition.toString()}</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Float</th>
-            <th>Int</th>
-            <th>Bin</th>
-            <th>Sign</th>
-            <th>Exp</th>
-            <th>Man</th>
-            <th>Hex</th>
-            <th>Classification</th>
-          </tr>
-        </thead>
-        <tbody>
-          <FloatRow {...inspectEncoding(indexToEncoding(scrollPosition))} />
-        </tbody>
-      </table>
+  return (
+    <div
+      className="scroll-container"
+      ref={ref}
+      style={{ '--row-height': `${ROW_HEIGHT}px` } as CSSProperties}
+    >
+      <FloatTable anchor={anchor} rowCount={visibleRows} />
     </div>
-  </>;
+  );
 }
 
 export default App;
