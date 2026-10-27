@@ -5,7 +5,7 @@ type FloatRowProps = { row: Row };
 export const FloatRow = ({ row }: FloatRowProps) => (
   <tr>
     <td>{row.index}</td>
-    <td>{row.float}</td>
+    <td>{row.exact}</td>
     <td>{row.int}</td>
     <td>{row.bin}</td>
     <td>{row.sign}</td>
