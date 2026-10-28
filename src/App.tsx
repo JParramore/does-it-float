@@ -33,7 +33,7 @@ function App() {
       );
       shouldFlash.current = false;
     }
-  }, [deferredAnchor, outcome]);
+  }, [deferredAnchor]);
 
   // Near either end of the rendered rows? Make the row in the middle of the view the new anchor.
   const onTableScroll = () => {
