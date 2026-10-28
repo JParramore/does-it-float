@@ -48,3 +48,7 @@ html {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.searches {
+  position: fixed;
+}

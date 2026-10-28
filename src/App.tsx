@@ -24,16 +24,18 @@ function App() {
   }
 
   const scrollValue = INPUT_MAX * Number((anchor * SCROLL_SCALE) / LAST_INDEX) / Number(SCROLL_SCALE);
-
   return (
     <>
-      <input type="range" className="scroll" min="0" value={scrollValue} max={INPUT_MAX} onChange={(e) => onScroll(e.currentTarget.value)} />
+      <div className="searches">
+        <input type="search" onChange={(e) => setAnchor(BigInt(e.currentTarget.value))} /> // Throws if we put something other than bigint in but w/e for now
+      </div>
       <div
         className="scroll-container"
         ref={ref}
       >
         <FloatTable anchor={anchor} rowCount={100} anchorRef={anchorRef} />
       </div>
+      <input type="range" className="scroll" min="0" value={scrollValue} max={INPUT_MAX} onChange={(e) => onScroll(e.currentTarget.value)} />
     </>
   );
 }
