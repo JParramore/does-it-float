@@ -60,7 +60,7 @@ table {
   th {
     position: sticky;
     top: 0;
-    background-color: var(--header-bg); 
+    background-color: var(--header-bg);
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border-strong);
     overflow-wrap: anywhere;
@@ -149,4 +149,36 @@ tr:hover .copy-button,
 
 tr:hover .copy-button:hover {
   opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .searches {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    label {
+      flex: 1;
+    }
+    input {
+      flex: 1;
+    }
+  }
+
+  table {
+    font-size: 0.75rem;
+    /* Only index and precise float fit on a phone. */
+    th:nth-child(n + 3),
+    td:nth-child(n + 3) {
+      display: none;
+    }
+    th:nth-child(1) {
+      width: 11rem;
+    }
+    th:nth-child(2) {
+      width: auto; /* take whatever is left */
+    }
+  }
+
+  .padded-zeros {
+    display: none;
+  }
 }
