@@ -92,7 +92,7 @@ function App() {
             <input type="search" name="value" />
           </label>
           <button type="submit">find</button>
-          <span className={outcome !== 'exact' ? 'outcome' : ''} role="status">{outcomeMessage(outcome)}</span>
+          <span className={outcome !== 'exact' ? 'outcome-false' : 'outcome-exact'} role="status">{outcomeMessage(outcome)}</span>
         </form>
       </div>
       <div className="scroll-container" ref={containerRef} onScroll={onTableScroll}>
