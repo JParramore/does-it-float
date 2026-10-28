@@ -3,6 +3,7 @@ import './App.css';
 import { FloatTable } from './components/FloatTable';
 import parseIndex from './lib/parse-index';
 import searchValueToIndex from './lib/search-value-to-index';
+import outcomeMessage from './lib/outcome-message';
 import { indexToSliderValue, sliderValueToIndex } from './lib/slider-position';
 
 const INPUT_MAX = 10000;
@@ -15,9 +16,23 @@ function App() {
   const anchorRef = useRef<HTMLTableRowElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [outcome, setOutcome] = useState<string | null>(null);
+  const shouldFlash = useRef(false);
 
   useLayoutEffect(() => {
     anchorRef.current?.scrollIntoView({ block: 'center' });
+    if (shouldFlash.current) {
+      anchorRef.current?.animate(
+        [
+          { backgroundColor: outcome === 'exact' ? 'green' : 'grey' },
+          { backgroundColor: 'transparent' }
+        ],
+        {
+          duration: 1500,
+          easing: 'ease-out'
+        }
+      );
+      shouldFlash.current = false;
+    }
   }, [deferredAnchor]);
 
   // Near either end of the rendered rows? Make the row in the middle of the view the new anchor.
@@ -35,8 +50,10 @@ function App() {
     if (middleRow?.dataset.index) setAnchor(BigInt(middleRow.dataset.index));
   };
 
-  const jumpTo = (index: bigint | null) => {
-    if (index !== null) setAnchor(index);
+  const jumpTo = (index: bigint | null, flash = false) => {
+    if (index === null) return;
+    if (flash && index !== anchor) shouldFlash.current = true;
+    setAnchor(index);
   };
 
   const onIndexSubmit = (e: SubmitEvent<HTMLFormElement>) => {
@@ -53,7 +70,7 @@ function App() {
       console.warn(`${valueValue} does not float`);
     }
     setOutcome(outcome);
-    jumpTo(index);
+    jumpTo(index, true);
   };
 
   return (
@@ -72,7 +89,7 @@ function App() {
             <input type="search" name="value" />
           </label>
           <button type="submit">find</button>
-          <span className={outcome !== 'exact' ? 'outcome' : ''}>{outcome !== 'exact' ? 'does not float' : 'floats'}</span>
+          <span className={outcome !== 'exact' ? 'outcome' : ''} role="status">{outcomeMessage(outcome)}</span>
         </form>
       </div>
       <div className="scroll-container" ref={containerRef} onScroll={onTableScroll}>
