@@ -1,10 +1,9 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState, type SubmitEvent } from 'react';
 import './App.css';
 import { FloatTable } from './components/FloatTable';
-import { LAST_INDEX, SCROLL_SCALE } from './lib/constants';
-import parseDecimal from './lib/parse-decimal';
-import decimalToEncoding from './lib/decimal-to-encoding';
-import encodingToIndex from './lib/encoding-to-index';
+import parseIndex from './lib/parse-index';
+import searchValueToIndex from './lib/search-value-to-index';
+import { indexToSliderValue, sliderValueToIndex } from './lib/slider-position';
 
 const INPUT_MAX = 10000;
 // const INITIAL_POSITION = { anchor: LAST_INDEX >> 1n, offset: 0 };
@@ -13,57 +12,63 @@ const INITIAL_POSITION = { anchor: BigInt(Number.MAX_SAFE_INTEGER), offset: 0 };
 // const INITIAL_POSITION = { anchor: LAST_INDEX, offset: 0 };
 
 function App() {
-  const ref = useRef<HTMLDivElement>(null);
   const [anchor, setAnchor] = useState(INITIAL_POSITION.anchor);
   const anchorRef = useRef<HTMLTableRowElement>(null);
 
   useLayoutEffect(() => {
     anchorRef.current?.scrollIntoView({ block: 'center' });
-  }, [anchor])
+  }, [anchor]);
 
-  const onScroll = (value: string) => {
-    const fraction = Number(value) / INPUT_MAX;
-    const scaled = BigInt(Math.round(fraction * Number(SCROLL_SCALE)));
-    setAnchor(scaled * LAST_INDEX / SCROLL_SCALE);
-  }
+  const jumpTo = (index: bigint | null) => {
+    if (index !== null) setAnchor(index);
+  };
 
-  const onSearchValue = (value: string) => {
-    const parsed = parseDecimal(value);
-    if (parsed.kind === 'invalid') {
-      console.warn(parsed.reason);
-      return;
+  const onIndexSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const indexValue = new FormData(e.currentTarget).get('index')?.toString() ?? '';
+    jumpTo(parseIndex(indexValue));
+  };
+
+  const onValueSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const valueValue = new FormData(e.currentTarget).get('value')?.toString() ?? '';
+    const { index, outcome } = searchValueToIndex(valueValue);
+    if (outcome !== 'exact') {
+      console.warn(`${valueValue} does not float`);
     }
+    jumpTo(index);
+  };
 
-    if (parsed.kind === 'infinity') {
-      // get inf indexes on sign
-      return;
-    }
-
-    if (parsed.kind === 'nan') {
-      // get nan indexes on sign
-      return;
-    }
-
-    const encoding = decimalToEncoding({ negative: parsed.negative, digits: parsed.digits, fractionDigits: parsed.fractionDigits });
-    const index = encodingToIndex(encoding.encoding);
-    setAnchor(index);
-  }
-
-  const scrollValue = INPUT_MAX * Number((anchor * SCROLL_SCALE) / LAST_INDEX) / Number(SCROLL_SCALE);
   return (
-    <>
+    <div className="app">
       <div className="searches">
-        <input type="search" onChange={(e) => setAnchor(BigInt(e.currentTarget.value))} />
-        <input type="search" onChange={(e) => onSearchValue(e.currentTarget.value)} />
+        <form onSubmit={onIndexSubmit}>
+          <label>
+            Index
+            <input type="search" name="index" />
+          </label>
+          <button type="submit">find</button>
+        </form>
+        <form onSubmit={onValueSubmit}>
+          <label>
+            Value
+            <input type="search" name="value" />
+          </label>
+          <button type="submit">find</button>
+        </form>
       </div>
-      <div
-        className="scroll-container"
-        ref={ref}
-      >
+      <div className="scroll-container">
         <FloatTable anchor={anchor} rowCount={100} anchorRef={anchorRef} />
       </div>
-      <input type="range" className="scroll" min="0" value={scrollValue} max={INPUT_MAX} onChange={(e) => onScroll(e.currentTarget.value)} />
-    </>
+      <input
+        type="range"
+        className="scroll"
+        min="0"
+        max={INPUT_MAX}
+        value={indexToSliderValue(anchor, INPUT_MAX)}
+        onChange={(e) => setAnchor(sliderValueToIndex(Number(e.currentTarget.value), INPUT_MAX))}
+      />
+    </div>
   );
 }
 

@@ -1,6 +1,33 @@
-.scroll-container {
-  width: 100%;
+.app {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
   height: 100vh;
+}
+
+.searches {
+  grid-column: 1 / -1; /* span the table and slider columns */
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid black;
+  form,
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* Only the table scrolls, so the search stays put and the sticky header sticks to the top of this box. */
+.scroll-container {
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
 }
 
 table {
@@ -33,22 +60,7 @@ table {
 }
 
 .scroll {
-  position: fixed;
   writing-mode: vertical-rl;
-  height: 100vh;
-  top: 0;
-  right: 0;
+  height: 100%;
   margin: 0;
-}
-
-html {
-  scrollbar-width: none;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-.searches {
-  position: fixed;
 }
