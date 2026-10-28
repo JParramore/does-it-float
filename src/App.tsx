@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type SubmitEvent } from 'react';
+import { useDeferredValue, useLayoutEffect, useRef, useState, type SubmitEvent } from 'react';
 import './App.css';
 import { FloatTable } from './components/FloatTable';
 import parseIndex from './lib/parse-index';
@@ -13,11 +13,13 @@ const INITIAL_POSITION = { anchor: BigInt(Number.MAX_SAFE_INTEGER), offset: 0 };
 
 function App() {
   const [anchor, setAnchor] = useState(INITIAL_POSITION.anchor);
+  const [isDragging, setIsDragging] = useState(false);
   const anchorRef = useRef<HTMLTableRowElement>(null);
+  const deferredAnchor = useDeferredValue(anchor);
 
   useLayoutEffect(() => {
     anchorRef.current?.scrollIntoView({ block: 'center' });
-  }, [anchor]);
+  }, [deferredAnchor]);
 
   const jumpTo = (index: bigint | null) => {
     if (index !== null) setAnchor(index);
@@ -39,6 +41,8 @@ function App() {
     jumpTo(index);
   };
 
+  const rowCount = isDragging ? 100 : 10000;
+
   return (
     <div className="app">
       <div className="searches">
@@ -58,11 +62,14 @@ function App() {
         </form>
       </div>
       <div className="scroll-container">
-        <FloatTable anchor={anchor} rowCount={100} anchorRef={anchorRef} />
+        <FloatTable anchor={deferredAnchor} rowCount={rowCount} anchorRef={anchorRef} />
+        {/* <FloatTable anchor={anchor} rowCount={rowCount} anchorRef={anchorRef} /> */}
       </div>
       <input
         type="range"
         className="scroll"
+        onMouseDown={() => setIsDragging(true)}
+        onMouseUp={() => setIsDragging(false)}
         min="0"
         max={INPUT_MAX}
         value={indexToSliderValue(anchor, INPUT_MAX)}
