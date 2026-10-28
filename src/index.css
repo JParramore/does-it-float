@@ -7,6 +7,12 @@
 
   color: #1f2937;
   background: #fff;
+
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --muted: #6b7280;
+  --header-bg: #f9fafb;
+  --row-hover: #f3f4f6;
 }
 
 * {

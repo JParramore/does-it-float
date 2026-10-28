@@ -81,14 +81,14 @@ function App() {
         </h1>
         <form onSubmit={onIndexSubmit}>
           <label>
-            Index
+            index
             <input type="search" name="index" />
           </label>
           <button type="submit">find</button>
         </form>
         <form onSubmit={onValueSubmit}>
           <label>
-            Value
+            value
             <input type="search" name="value" />
           </label>
           <button type="submit">find</button>
