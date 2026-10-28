@@ -76,6 +76,9 @@ function App() {
   return (
     <div className="app">
       <div className="searches">
+        <h1>
+          Every Float64 <small>all 2<sup>64</sup> IEEE 754 doubles, in order</small>
+        </h1>
         <form onSubmit={onIndexSubmit}>
           <label>
             Index

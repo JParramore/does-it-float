@@ -18,6 +18,15 @@
     align-items: center;
     gap: 0.5rem;
   }
+  h1 {
+    margin: 0 auto 0 0;
+    font-size: 1.25rem;
+    small {
+      font-size: 0.75rem;
+      font-weight: normal;
+      color: rgb(100, 100, 100);
+    }
+  }
 }
 
 /* Only the table scrolls, so the search stays put and the sticky header sticks to the top of this box. */
@@ -32,7 +41,7 @@
 
 table {
   table-layout: fixed;
-  width: 75%;
+  width: 100%;
   margin-inline: auto; /* center the table horizontally */
   font-family: monospace; /* make chars all the same width */
   font-size: 0.875rem;

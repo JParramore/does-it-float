@@ -7,7 +7,7 @@ export const FloatRow = ({ row, anchorRef }: FloatRowProps) => (
   <tr ref={anchorRef} data-index={row.index.toString()}>
     <td>{row.index}</td>
     <td>{row.exact}</td>
-    <td>{row.hex}</td>
+    <td>{`0x${row.hex}`}</td>
     <td>{row.classification}</td>
   </tr>
 );
