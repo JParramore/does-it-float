@@ -6,20 +6,33 @@ import searchValueToIndex from './lib/search-value-to-index';
 import { indexToSliderValue, sliderValueToIndex } from './lib/slider-position';
 
 const INPUT_MAX = 10000;
-// const INITIAL_POSITION = { anchor: LAST_INDEX >> 1n, offset: 0 };
-const INITIAL_POSITION = { anchor: BigInt(Number.MAX_SAFE_INTEGER), offset: 0 };
-// const INITIAL_POSITION = { anchor: 0n, offset: 0 };
-// const INITIAL_POSITION = { anchor: LAST_INDEX, offset: 0 };
+const INITIAL_POSITION = { anchor: 0n, offset: 0 };
+const ROWS_EACH_SIDE = 100;
 
 function App() {
   const [anchor, setAnchor] = useState(INITIAL_POSITION.anchor);
-  const [isDragging, setIsDragging] = useState(false);
-  const anchorRef = useRef<HTMLTableRowElement>(null);
   const deferredAnchor = useDeferredValue(anchor);
+  const anchorRef = useRef<HTMLTableRowElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     anchorRef.current?.scrollIntoView({ block: 'center' });
   }, [deferredAnchor]);
+
+  // Near either end of the rendered rows? Make the row in the middle of the view the new anchor.
+  const onTableScroll = () => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const spaceBelow = container.scrollHeight - container.scrollTop - container.clientHeight;
+    if (container.scrollTop > container.clientHeight && spaceBelow > container.clientHeight) return;
+
+    const box = container.getBoundingClientRect();
+    const middleRow = document
+      .elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)
+      ?.closest<HTMLTableRowElement>('tr[data-index]');
+    if (middleRow?.dataset.index) setAnchor(BigInt(middleRow.dataset.index));
+  };
 
   const jumpTo = (index: bigint | null) => {
     if (index !== null) setAnchor(index);
@@ -41,8 +54,6 @@ function App() {
     jumpTo(index);
   };
 
-  const rowCount = isDragging ? 100 : 10000;
-
   return (
     <div className="app">
       <div className="searches">
@@ -61,19 +72,16 @@ function App() {
           <button type="submit">find</button>
         </form>
       </div>
-      <div className="scroll-container">
-        <FloatTable anchor={deferredAnchor} rowCount={rowCount} anchorRef={anchorRef} />
-        {/* <FloatTable anchor={anchor} rowCount={rowCount} anchorRef={anchorRef} /> */}
+      <div className="scroll-container" ref={containerRef} onScroll={onTableScroll}>
+        <FloatTable anchor={deferredAnchor} rowCount={ROWS_EACH_SIDE} anchorRef={anchorRef} />
       </div>
       <input
         type="range"
         className="scroll"
-        onMouseDown={() => setIsDragging(true)}
-        onMouseUp={() => setIsDragging(false)}
         min="0"
         max={INPUT_MAX}
         value={indexToSliderValue(anchor, INPUT_MAX)}
-        onChange={(e) => setAnchor(sliderValueToIndex(Number(e.currentTarget.value), INPUT_MAX))}
+        onChange={(e) => jumpTo(sliderValueToIndex(Number(e.currentTarget.value), INPUT_MAX))}
       />
     </div>
   );
