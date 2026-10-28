@@ -31,6 +31,18 @@
   }
 }
 
+.repo-link {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  color: var(--muted);
+}
+
+.repo-link:hover {
+  color: inherit;
+}
+
 /* Only the table scrolls, so the search stays put and the sticky header sticks to the top of this box. */
 .scroll-container {
   overflow-y: auto;
@@ -153,8 +165,16 @@ tr:hover .copy-button:hover {
 
 @media (max-width: 600px) {
   .searches {
-    grid-template-columns: 1fr;
+    /* heading | code link on the first row, then each form on its own full-width row */
+    grid-template-columns: 1fr auto;
     gap: 0.5rem;
+    form {
+      grid-column: 1 / -1;
+    }
+    .repo-link {
+      grid-row: 1;
+      grid-column: 2;
+    }
     label {
       flex: 1;
     }

@@ -95,6 +95,13 @@ function App() {
           <button type="submit">find</button>
           <span className={outcome !== 'exact' ? 'outcome-false' : 'outcome-exact'} role="status">{outcomeMessage(outcome)}</span>
         </form>
+        <a className="repo-link" href="https://github.com/JParramore/does-it-float" target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+        </a>
       </div>
       <div className="scroll-container" ref={containerRef} onScroll={onTableScroll}>
         <FloatTable anchor={deferredAnchor} rowCount={ROWS_EACH_SIDE} anchorRef={anchorRef} />
