@@ -11,10 +11,10 @@ export const FloatTable = memo(({ anchor, rowCount, anchorRef }: FloatTableProps
     <table>
       <thead>
         <tr>
-          <th>Index</th>
-          <th>Precise Float</th>
-          <th>Hex</th>
-          <th>Classification</th>
+          <th>index</th>
+          <th>precise float</th>
+          <th>hex</th>
+          <th>classification</th>
         </tr>
       </thead>
       <tbody>

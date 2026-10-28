@@ -59,7 +59,8 @@ function App() {
   const onIndexSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const indexValue = new FormData(e.currentTarget).get('index')?.toString() ?? '';
-    jumpTo(parseIndex(indexValue));
+    setOutcome(null);
+    jumpTo(parseIndex(indexValue), true);
   };
 
   const onValueSubmit = (e: SubmitEvent<HTMLFormElement>) => {
