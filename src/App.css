@@ -5,6 +5,31 @@
 
 table {
   table-layout: fixed;
+  width: 75%;
+  margin-inline: auto; /* center the table horizontally */
+  font-family: monospace; /* make chars all the same width */
+  font-size: 0.875rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  td {
+    overflow-wrap: anywhere;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    text-align: center;
+  }
+  th {
+    position: sticky;
+    top: 0;
+    background-color: white; /* keep header visible over table content */
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    overflow-wrap: anywhere;
+  }
+  th:nth-child(2) {
+    width: 50%;
+  }
 }
 
 .scroll {
@@ -17,9 +42,9 @@ table {
 }
 
 html {
-  scrollbar-width: none; 
+  scrollbar-width: none;
 }
 
 ::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }

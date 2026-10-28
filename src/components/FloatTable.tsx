@@ -12,12 +12,7 @@ export const FloatTable = ({ anchor, rowCount, anchorRef }: FloatTableProps) => 
       <thead>
         <tr>
           <th>Index</th>
-          <th>Float</th>
-          <th>Int</th>
-          <th>Bin</th>
-          <th>Sign</th>
-          <th>Exp</th>
-          <th>Man</th>
+          <th>Precise Float</th>
           <th>Hex</th>
           <th>Classification</th>
         </tr>
