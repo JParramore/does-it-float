@@ -90,3 +90,7 @@ table {
 .scroll::-moz-range-thumb:hover {
   background: rgb(60, 60, 60);
 }
+
+.outcome {
+  color: red;
+}

@@ -14,6 +14,7 @@ function App() {
   const deferredAnchor = useDeferredValue(anchor);
   const anchorRef = useRef<HTMLTableRowElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [outcome, setOutcome] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     anchorRef.current?.scrollIntoView({ block: 'center' });
@@ -51,6 +52,7 @@ function App() {
     if (outcome !== 'exact') {
       console.warn(`${valueValue} does not float`);
     }
+    setOutcome(outcome);
     jumpTo(index);
   };
 
@@ -70,6 +72,7 @@ function App() {
             <input type="search" name="value" />
           </label>
           <button type="submit">find</button>
+          <span className={outcome !== 'exact' ? 'outcome' : ''}>{outcome !== 'exact' ? 'does not float' : 'floats'}</span>
         </form>
       </div>
       <div className="scroll-container" ref={containerRef} onScroll={onTableScroll}>
