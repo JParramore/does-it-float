@@ -4,18 +4,28 @@ import type Float from './float';
 import indexToEncoding from './index-to-encoding';
 import inspectEncoding from './inspect-encoding';
 import nextEncoding from './next-encoding';
+import previousEncoding from './previous-encoding';
 
 export type Row = Float & { index: bigint; exact: string };
 
 const computeRows = (anchor: bigint, count: number): Row[] => {
-  const rows: Row[] = [];
   let value: Float = inspectEncoding(indexToEncoding(anchor));
+  const rows: Row[] = [{ index: anchor, exact: exactDecimal(value.int), ...value }];
 
-  for (let i = 0; i < count; i++) {
-    const index = anchor + BigInt(i);
-    rows.push({ index, exact: exactDecimal(value.int), ...value });
-    if (index === LAST_INDEX) break;
-    value = nextEncoding(value);
+  let pos = value;
+  let neg = value;
+  for (let i = 1; i < count; i++) {
+    const pIndex = anchor + BigInt(i);
+    const nIndex = anchor + BigInt(-i);
+    // Check each side before stepping, so neither walks past an end and one end doesn't stop the other side.
+    if (pIndex <= LAST_INDEX) {
+      pos = nextEncoding(pos);
+      rows.push({ index: pIndex, exact: exactDecimal(pos.int), ...pos });
+    }
+    if (nIndex >= 0n) {
+      neg = previousEncoding(neg);
+      rows.unshift({ index: nIndex, exact: exactDecimal(neg.int), ...neg });
+    }
   }
 
   return rows;

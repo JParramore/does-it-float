@@ -1,19 +1,25 @@
 .scroll-container {
   width: 100%;
   height: 100vh;
-  overflow: hidden;
 }
 
-/* We need rows to repeat exactly every ROW_HEIGHT pixels, but tables add some weird borders ootb. */
-.scroll-container table {
-  border-collapse: collapse;
-  border-spacing: 0;
+table {
+  table-layout: fixed;
 }
 
-.scroll-container th,
-.scroll-container td {
-  height: var(--row-height);
-  padding: 0 4px;
-  line-height: var(--row-height);
-  white-space: nowrap;
+.scroll {
+  position: fixed;
+  writing-mode: vertical-rl;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  margin: 0;
+}
+
+html {
+  scrollbar-width: none; 
+}
+
+::-webkit-scrollbar {
+  display: none; 
 }
