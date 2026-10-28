@@ -115,7 +115,11 @@ const exactDecimal = (encoding: bigint): string => {
 
   // Remove trailing fractional zeros for a canonical representation.
   // This doesn't lose precision: 1.500 and 1.5 are the same number.
-  const trimmedFractionalPart = fractionalPart.replace(/0+$/, '');
+  let trimmedEnd = fractionalPart.length;
+  while (trimmedEnd > 0 && fractionalPart[trimmedEnd - 1] === '0') {
+    trimmedEnd--;
+  }
+  const trimmedFractionalPart = fractionalPart.slice(0, trimmedEnd);
 
   if (trimmedFractionalPart.length === 0) {
     return signPrefix + integerPart;
