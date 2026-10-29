@@ -1,5 +1,6 @@
 import { LAST_INDEX } from './constants';
 
+// Not used any longer. We removed index search. Keeping it around incase it's helpful later.
 const parseIndex = (text: string): bigint | null => {
   if (text.trim() === '') return null;
 

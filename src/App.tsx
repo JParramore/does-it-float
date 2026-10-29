@@ -1,7 +1,6 @@
-import { useDeferredValue, useLayoutEffect, useRef, useState, type SubmitEvent } from 'react';
+import { useDeferredValue, useLayoutEffect, useRef, useState } from 'react';
 import './App.css';
 import { FloatTable } from './components/FloatTable';
-import parseIndex from './lib/parse-index';
 import searchValueToIndex from './lib/search-value-to-index';
 import outcomeMessage from './lib/outcome-message';
 import { indexToSliderValue, sliderValueToIndex } from './lib/slider-position';
