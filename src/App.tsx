@@ -56,20 +56,9 @@ function App() {
     setAnchor(index);
   };
 
-  const onIndexSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+  const onValueSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const indexValue = new FormData(e.currentTarget).get('index')?.toString() ?? '';
-    setOutcome(null);
-    jumpTo(parseIndex(indexValue), true);
-  };
-
-  const onValueSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const valueValue = new FormData(e.currentTarget).get('value')?.toString() ?? '';
-    const { index, outcome } = searchValueToIndex(valueValue);
-    if (outcome !== 'exact') {
-      console.warn(`${valueValue} does not float`);
-    }
+    const { index, outcome } = searchValueToIndex(e.currentTarget.value);
     setOutcome(outcome);
     jumpTo(index, true);
   };
@@ -80,21 +69,11 @@ function App() {
         <h1>
           Every Float64 <small>all 2<sup>64</sup> IEEE 754 doubles, in order</small>
         </h1>
-        <form onSubmit={onIndexSubmit}>
           <label>
-            index
-            <input type="search" name="index" />
+            search 
+            <input onChange={onValueSubmit} type="search" name="value" />
           </label>
-          <button type="submit">find</button>
-        </form>
-        <form onSubmit={onValueSubmit}>
-          <label>
-            value
-            <input type="search" name="value" />
-          </label>
-          <button type="submit">find</button>
           <span className={outcome !== 'exact' ? 'outcome-false' : 'outcome-exact'} role="status">{outcomeMessage(outcome)}</span>
-        </form>
         <a className="repo-link" href="https://github.com/JParramore/does-it-float" target="_blank" rel="noreferrer">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
